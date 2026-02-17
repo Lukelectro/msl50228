@@ -102,13 +102,20 @@ void MSL50228::writeAt(unsigned char display, const char* tekst) {
 	};
 }
 void MSL50228::write(const char * str) {
+	writeFrom(0, str);
+}
+
+void MSL50228::writeFrom(unsigned char disp, const char * str) {
 	int len = 0;
 	for(const char * p = str; *p; len++, p++) {}; // strlen, basicly
 
-	for(int d = 0; d < 6 && d*4 < len; d++) 
+	for(int d = disp; d < 6 && d*4 < len; d++) 
 		writeAt(d, str + d * 4);
 }
-
-
   
+void MSL50228::option(unsigned char disp, options whichoption){
+// OR the option with the brightness and write to the selected DISP. Options that apply to characters should have the character pre-marked by |0x80 before writing that char
+	select(disp);
+   	sendCtrl(whichoption|(brightness&3));
+}
 

@@ -42,14 +42,19 @@ less than 1 ms*/
 
 #define NUMDISP 6*4		// there are 6 displays of 4 characters each, on 50228
 
+
+enum options {BLINKDISP=0x20, LAMPTESTDISP=0x40, CURSORCHAR=0x10, ALTERNATECHAR=0x1C, BLINKCHAR=0x14, BLINKCURSOR=0x18}; /* available options. For the char options, write the char with its 7th bit set for example ('A'|0x80'), so that character gets selected for the extra option */
+
 class MSL50228
-{
+{	
 	public:
 		MSL50228();
 		void clear(void); 					/* clear full display */
 		void setBrightness(char br); 		/* set brightness for full display, 0-3 with 3 brightest and 0 off. */
 		void write(const char text[]); 		/* Write from start of display */
 		void writeAt(unsigned char disp, const char text[]); /* write at display 0-5, max 4 chars*/
+		void writeFrom(unsigned char disp, const char text[]); /* write from display 0-5, for the remaining characters*/
+		void option(unsigned char disp, enum options whichoption); /* apply option to selected display. Options that aply to a character need that character marked first by having its 7th bit set */
 	private:
 		unsigned char brightness;
 		void sendCtrl(unsigned char cword);

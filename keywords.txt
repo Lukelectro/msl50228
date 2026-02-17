@@ -1,5 +1,7 @@
 MSL50228	KEYWORD1
 write		KEYWORD2
 writeAt		KEYWORD2
+writeFrom	KEYWORD2
+option		KEYWORD2
 clear		KEYWORD2
 setBrightness	KEYWORD2

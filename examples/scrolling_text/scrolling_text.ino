@@ -21,11 +21,11 @@ void loop() {
   delay(200);
   i++;
 
-  if (digitalRead(BUTT_DOWN)==0) {
+  if (digitalRead(B_DOWN)==0) {
     brightness--;
     delay(100);
   }
-  if (digitalRead(BUTT_UP)==0) {
+  if (digitalRead(B_UP)==0) {
     brightness++;
     delay(100);
   }

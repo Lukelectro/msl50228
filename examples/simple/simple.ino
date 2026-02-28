@@ -12,11 +12,11 @@ void setup() {
 
 void loop() {
   static char brightness = 3;
-  if (digitalRead(BUTT_DOWN)==0) {
+  if (digitalRead(B_DOWN)==0) {
     brightness--;
     delay(100);
   }
-  if (digitalRead(BUTT_UP)==0) {
+  if (digitalRead(B_UP)==0) {
     brightness++;
     delay(100);
   }

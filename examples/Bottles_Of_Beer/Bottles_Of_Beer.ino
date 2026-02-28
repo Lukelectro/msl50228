@@ -21,11 +21,11 @@ leddisplay.clear();                 /* clear the entire display. */
 leddisplay.writeAt(5, "100");
 leddisplay.write("bottles of beer:");
 delay(1000);
-leddisplay.writeAt(5,"99");  /* Oops! 990 bottles!*/
-delay(1000);
-leddisplay.writeAt(5, "OOPS!");
-delay(1000);
-leddisplay.writeAt(5,"99 ");  /* That's better!*/
+//leddisplay.writeAt(5,"99");  /* Oops! 990 bottles! Should explicitly overwrite old data! -- actualy, it shows 99 correctly, but explicit overwriting is still better*/
+//delay(1000);
+//leddisplay.writeAt(5, "OOPS!");
+//delay(1000);
+leddisplay.writeAt(5,"99  ");  /* That's better!*/
 delay(1000);
 }
 
@@ -41,11 +41,11 @@ void loop() {
 
   delay(500); /* setting brightness will be clucky due to this delay but hey it is just an example of how to write text and how to read the buttons...*/
 
-  if (digitalRead(BUTT_DOWN)==0) {
+  if (digitalRead(B_DOWN)==0) {
     brightness--;
     delay(100);
   }
-  if (digitalRead(BUTT_UP)==0) {
+  if (digitalRead(B_UP)==0) {
     brightness++;
     delay(100);
   }

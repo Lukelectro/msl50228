@@ -8,33 +8,24 @@
 #include "Arduino.h"
 #include "MSL50228.h"
 
+
 /* Pins of displays are always these pins on this board, so no need to pass pins to the constructor. */
 MSL50228::MSL50228()
 {
 	brightness = 3; // default to max brightness
 
-	DDRC |= 0x38; // set multiplexer pins to output 
+	DDRD &=~((1<<2)|(1<<3));// BUTT_UP and BUTT_DOWN inputs
+	PORTD|=((1<<2)|(1<<3)); // BUTT_UP and BUTT_DOWN pull-ups
+	DDRC |= 0x7F;			// set A0,A1,A2, multiplexer and CE1 pins to output 
 
-    pinMode(BUTT_DOWN, INPUT_PULLUP);
-	pinMode(BUTT_UP, INPUT_PULLUP);
+	MAKE_OUTPUT(PD44_WR);
+	MAKE_OUTPUT(PD44_RD);
+	MAKE_LOW(PD44_RD);
 
-	/*pd44 init */
-	pinMode(PD44_WR, OUTPUT);
-	#ifdef PD44_CE1
-	pinMode(PD44_CE1, OUTPUT);
-	#endif
-	
-	pinMode(PD44_RD, OUTPUT);
-	digitalWrite(PD44_RD, LOW);
+	DDRA=0xFF; 				// porta output, it is the data port
 
-	pinMode(PD44_A2, OUTPUT);
-	pinMode(PD44_A1, OUTPUT);
-	pinMode(PD44_A0, OUTPUT);
-
-	DDRA=0xFF; // porta output, it is the data port
-
-	pinMode(PD44_RST, OUTPUT);
-	digitalWrite(PD44_RST, HIGH);
+	MAKE_OUTPUT(PD44_RST);
+	MAKE_HIGH(PD44_RST);	
 
 	/*after init, clear and set brightness */
 	clear();
@@ -64,23 +55,25 @@ void MSL50228::clear(void){
 
 void MSL50228::_sendByte(unsigned char addr, unsigned char val) {
 #ifdef PD44_CE1
-	digitalWrite(PD44_CE1,HIGH);
+	MAKE_HIGH(PD44_CE1);
 #endif
-	digitalWrite(PD44_RD, HIGH);
-	digitalWrite(PD44_WR, HIGH);
+	MAKE_HIGH(PD44_RD);
+	MAKE_HIGH(PD44_WR);
 
-	digitalWrite(PD44_A0, ((addr >> 0) & 1));
-	digitalWrite(PD44_A1, ((addr >> 1) & 1));
-	digitalWrite(PD44_A2, ((addr >> 2) & 1));
+	//SET(PORTC,0,((addr >> 0) & 1)); // digitalWrite(PD44_A0, ((addr >> 0) & 1));
+	//SET(PORTC,1,((addr >> 1) & 1)); // digitalWrite(PD44_A1, ((addr >> 1) & 1));
+	//SET(PORTC,2,((addr >> 2) & 1)); // digitalWrite(PD44_A2, ((addr >> 2) & 1));
+	PORTC = (PORTC & (~0x07)) | (addr&0x07); // set adress pins to adres value, same as above comments
 
-    PD44_DATA = val;
 
-	digitalWrite(PD44_WR, LOW);
-	digitalWrite(PD44_WR, HIGH);
+    PD44_DATA = val;	//send data
 
-	digitalWrite(PD44_RD, LOW);
+	MAKE_LOW(PD44_WR);
+	MAKE_HIGH(PD44_WR);
+
+	MAKE_LOW(PD44_RD);
 #ifdef PD44_CE1
-	digitalWrite(PD44_CE1, LOW);
+	MAKE_LOW(PD44_CE1);
 #endif
 }
 
